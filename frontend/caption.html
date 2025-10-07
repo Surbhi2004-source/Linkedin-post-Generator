@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generate Caption</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-2xl shadow-lg w-[700px] grid grid-cols-2 gap-6">
+    
+    <div>
+      <h1 class="text-2xl font-bold text-green-700 mb-6 text-center">Generate LinkedIn Caption</h1>
+
+      <label class="block mb-2 font-medium">Company</label>
+      <input id="company" type="text" class="w-full p-2 border rounded mb-4" />
+
+      <label class="block mb-2 font-medium">Completion Date</label>
+      <input id="date" type="text" placeholder="Sep 2025" class="w-full p-2 border rounded mb-4" />
+
+      <label class="block mb-2 font-medium">Certificate Name</label>
+      <input id="certName" type="text" class="w-full p-2 border rounded mb-4" />
+
+      <label class="block mb-2 font-medium">Issued By</label>
+      <input id="issuer" type="text" class="w-full p-2 border rounded mb-4" />
+
+      <label class="block mb-2 font-medium">Skills</label>
+      <input id="skills" type="text" class="w-full p-2 border rounded mb-4" />
+
+      <label class="block mb-2 font-medium">Hashtags</label>
+      <input id="hashtags" type="text" placeholder="#AI #Learning" class="w-full p-2 border rounded mb-4" />
+
+      <label class="block mb-2 font-medium">Certificate URL</label>
+      <input id="url" type="text" class="w-full p-2 border rounded mb-4" />
+
+      <div class="flex justify-between">
+        <button onclick="generateCaption()" class="bg-green-500 text-white px-4 py-2 rounded">Generate</button>
+        <a href="index.html" class="bg-gray-400 text-white px-4 py-2 rounded">Back</a>
+      </div>
+    </div>
+
+  
+    <div>
+      <h2 class="text-xl font-semibold mb-4">Generated Caption</h2>
+      <div id="output" class="p-4 bg-gray-100 rounded min-h-[300px]"></div>
+    </div>
+  </div>
+
+  <script>
+    async function generateCaption() {
+      const company = document.getElementById("company").value;
+      const date = document.getElementById("date").value;
+      const certName = document.getElementById("certName").value;
+      const issuer = document.getElementById("issuer").value;
+      const skills = document.getElementById("skills").value;
+      const hashtags = document.getElementById("hashtags").value;
+      const url = document.getElementById("url").value;
+
+      const prompt = `Write a LinkedIn caption for completing the certificate '${certName}' at ${company}, issued by ${issuer} on ${date}. Skills learned: ${skills}. Hashtags: ${hashtags}. Certificate URL: ${url}.`;
+
+      try {
+        const res = await fetch("http://localhost:5000/generate-caption", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt })
+        });
+
+        const data = await res.json();
+        document.getElementById("output").innerText = data.text || "No output received.";
+      } catch (err) {
+        console.error(err);
+        document.getElementById("output").innerText = "Error generating caption.";
+      }
+    }
+  </script>
+</body>
+</html>
